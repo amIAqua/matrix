@@ -16,7 +16,7 @@ node_modules
 coverage
 
 # Ide
-.vscode
+.vscode/*
 
 # Turbo
 .turbo
