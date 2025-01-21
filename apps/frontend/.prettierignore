@@ -1,0 +1,10 @@
+# Ignore everything recursively
+*
+
+# But not the .js/.ts/.vue files
+!*.js
+!*.ts
+!*.vue
+
+# Check subdirectories too
+!*/

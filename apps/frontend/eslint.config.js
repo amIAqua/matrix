@@ -10,14 +10,14 @@ export default [
     },
     js.configs.recommended,
     {
-        files: ['**/*.js', '**/*.ts', '**/*.vue'],
+        files: ['**/*.js', '**/*.ts'],
         languageOptions: {
             parser: typescriptParser,
             parserOptions: {
                 ecmaVersion: 'latest',
                 sourceType: 'module',
                 ecmaFeatures: {
-                    jsx: true,
+                    jsx: false,
                 },
             },
             globals: {
@@ -28,19 +28,12 @@ export default [
         },
         plugins: {
             '@typescript-eslint': typescript,
-            vue: vue,
+            vue,
         },
         rules: {
-            // TypeScript specific rules
-            '@typescript-eslint/explicit-function-return-type': 'warn',
+            '@typescript-eslint/explicit-function-return-type': 'error',
             '@typescript-eslint/no-explicit-any': 'warn',
             '@typescript-eslint/no-unused-vars': 'error',
-            // '@typescript-eslint/type-annotation-spacing': 'error',
-            // '@typescript-eslint/consistent-type-definitions': [
-            //     'error',
-            //     'interface',
-            // ],
-            // '@typescript-eslint/no-non-null-assertion': 'warn',
 
             // Vue specific rules
             // 'vue/html-closing-bracket-newline': [
@@ -68,15 +61,10 @@ export default [
             //     },
             // ],
             // 'vue/multi-word-component-names': 'error',
-            // 'vue/no-unused-components': 'error',
+            'vue/no-unused-components': 'warn',
             // 'vue/script-setup-uses-vars': 'error',
 
-            // General JavaScript/ES6+ rules
-            // 'no-console':
-            //     process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-            // 'no-debugger':
-            //     process.env.NODE_ENV === 'production' ? 'error' : 'off',
-            semi: ['error', 'never'],
+            semi: ['error', 'always'],
             quotes: ['error', 'single'],
             'arrow-spacing': ['error', { before: true, after: true }],
             'no-var': 'error',
