@@ -2,5 +2,5 @@
 </script>
 
 <template>
-    hello penis
+    hello
 </template>
