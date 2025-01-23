@@ -1,13 +1,3 @@
-html, body {
-    margin: 0;
-    padding: 0;
-
-    font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-}
-
-@media (prefers-color-scheme: dark) {
-    :root {
-        color: #000;
-        background-color: #FFF;
-    }
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

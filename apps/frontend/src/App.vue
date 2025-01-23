@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import { Button } from 'src/shared/ui/components/button'
 </script>
 
 <template>
-    hello
+    <Button>This is button</Button>
 </template>

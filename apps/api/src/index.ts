@@ -1,16 +1,27 @@
-import { serve } from '@hono/node-server'
-import { Hono } from 'hono'
+import { serve } from '@hono/node-server';
+import { OpenAPIHono } from '@hono/zod-openapi';
 
-const app = new Hono()
+import { setupRoutes } from 'src/router/setup';
+import { setupSwagger } from 'src/swagger/setup';
 
-app.get('/', (c) => {
-  return c.text('Hello Hono!')
-})
+import 'dotenv/config';
+import { cors } from 'hono/cors';
 
-const port: any = 3000
-// console.log(`Server is running on http://localhost:${port}`)
+const app = new OpenAPIHono();
+app.use(
+    cors({
+        origin: 'localhost',
+        allowMethods: ['GET', 'POST'],
+    }),
+);
+
+setupSwagger(app);
+setupRoutes(app);
+
+const envPort = process.env.PORT;
+const appPort = envPort ? parseInt(envPort) : 3000;
 
 serve({
-  fetch: app.fetch,
-  port: 300
-})
+    fetch: app.fetch,
+    port: appPort,
+});
