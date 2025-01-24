@@ -5,15 +5,15 @@
     "tsConfigPath": "./tsconfig.app.json",
     "tailwind": {
         "config": "tailwind.config.js",
-        "css": "src/app/styles/global.css",
+        "css": "src/app/assets/css/global.css",
         "baseColor": "slate",
         "cssVariables": false,
         "prefix": ""
     },
     "framework": "vite",
     "aliases": {
-        "components": "src/shared/ui/components",
-        "utils": "src/shared/ui/utils",
-        "ui": "src/shared/ui/components"
+        "components": "src/shared/uikit/components",
+        "utils": "src/shared/uikit/lib/utils",
+        "ui": "src/shared/uikit/components"
     }
 }

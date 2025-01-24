@@ -11,13 +11,15 @@
         "lint:check": "eslint"
     },
     "dependencies": {
+        "@vueuse/core": "^12.5.0",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "lucide-vue-next": "^0.474.0",
         "radix-vue": "^1.9.12",
         "tailwind-merge": "^2.6.0",
         "tailwindcss-animate": "^1.0.7",
-        "vue": "^3.5.13"
+        "vue": "^3.5.13",
+        "vue-router": "^4.5.0"
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^8.21.0",
