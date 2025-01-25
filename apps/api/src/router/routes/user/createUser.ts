@@ -12,6 +12,7 @@ import {
 export const createUserRoute = createRoute({
     method: 'post',
     path: '/user',
+    tags: ['user'],
     request: {
         body: {
             content: {

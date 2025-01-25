@@ -1,6 +1,12 @@
 import { sql } from 'drizzle-orm';
 import { pgTable, varchar, uuid, timestamp, text } from 'drizzle-orm/pg-core';
 
+export const sessionsTable = pgTable('sessions', {
+    id: uuid().default(sql`gen_random_uuid()`),
+    userId: uuid('').notNull(),
+    expiresIn: timestamp().notNull(),
+});
+
 export const usersTable = pgTable('users', {
     id: uuid().default(sql`gen_random_uuid()`),
     name: varchar({ length: 100 }).notNull(),

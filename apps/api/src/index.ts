@@ -1,5 +1,7 @@
 import { serve } from '@hono/node-server';
+import { db } from 'src/db';
 import { OpenAPIHono } from '@hono/zod-openapi';
+import { sessionMiddleware } from 'src/router/common/middlewares/session';
 
 import { setupRoutes } from 'src/router/setup';
 import { setupSwagger } from 'src/swagger/setup';
@@ -13,6 +15,17 @@ app.use(
     cors({
         origin: 'localhost',
         allowMethods: ['GET', 'POST'],
+    }),
+);
+
+app.use(
+    '*',
+    sessionMiddleware({
+        sessionCookieName: 'auth-token',
+        encryptionKey: 'super-secret-key',
+        store: {
+            db,
+        },
     }),
 );
 

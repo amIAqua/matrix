@@ -13,6 +13,7 @@ import {
 export const getUserByIdRoute = createRoute({
     method: 'get',
     path: '/user/{id}',
+    tags: ['user'],
     request: {
         params: getUserByIdParams,
     },
