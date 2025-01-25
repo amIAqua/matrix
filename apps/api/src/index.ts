@@ -6,6 +6,7 @@ import { setupSwagger } from 'src/swagger/setup';
 
 import 'dotenv/config';
 import { cors } from 'hono/cors';
+import { appConfig } from './app/config';
 
 const app = new OpenAPIHono();
 app.use(
@@ -18,10 +19,10 @@ app.use(
 setupSwagger(app);
 setupRoutes(app);
 
-const envPort = process.env.PORT;
-const appPort = envPort ? parseInt(envPort) : 3000;
+const envPort = appConfig.PORT;
+const port = envPort ? parseInt(envPort) : 3000;
 
 serve({
     fetch: app.fetch,
-    port: appPort,
+    port,
 });

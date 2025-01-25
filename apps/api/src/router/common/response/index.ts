@@ -1,7 +1,6 @@
 import { TypedResponse } from 'hono';
-import { ContentfulStatusCode, StatusCode } from 'hono/utils/http-status';
 
-export type THandlerResponse<T, S extends ContentfulStatusCode> = TypedResponse<
+export type THandlerResponse<T, S extends HttpStatusCode> = TypedResponse<
     T,
     S,
     'json'
@@ -10,4 +9,6 @@ export type THandlerResponse<T, S extends ContentfulStatusCode> = TypedResponse<
 export enum HttpStatusCode {
     OK = 200,
     CREATED = 201,
+    INTERNAL_SERVER_ERROR = 500,
+    NOT_FOUND = 404,
 }

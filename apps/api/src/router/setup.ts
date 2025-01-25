@@ -1,7 +1,13 @@
 import type { OpenAPIHono } from '@hono/zod-openapi';
 
-import { getHelloRoute, getHelloHandler } from 'src/router/routes/hello';
+import {
+    createUserRoute,
+    createUserHandler,
+    getUserByIdRoute,
+    getUserByIdHandler,
+} from 'src/router/routes/user';
 
 export const setupRoutes = (app: OpenAPIHono): any => {
-    app.openapi(getHelloRoute, getHelloHandler);
+    app.openapi(getUserByIdRoute, getUserByIdHandler);
+    app.openapi(createUserRoute, createUserHandler);
 };
