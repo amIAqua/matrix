@@ -6,6 +6,11 @@ export type THandlerResponse<T, S extends HttpStatusCode> = TypedResponse<
     'json'
 >;
 
+export type THttpError = {
+    statusCode: HttpStatusCode;
+    message: string;
+};
+
 export enum HttpStatusCode {
     OK = 200,
     CREATED = 201,

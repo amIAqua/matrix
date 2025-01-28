@@ -6,10 +6,19 @@ import {
     getUserByIdRoute,
     getUserByIdHandler,
 } from 'src/router/routes/user';
-import { loginRoute, loginHandler } from 'src/router/routes/auth';
+import {
+    loginRoute,
+    loginHandler,
+    logoutRoute,
+    logoutHandler,
+    registerRoute,
+    registerHandler,
+} from 'src/router/routes/auth';
 
 export const setupRoutes = (app: OpenAPIHono): any => {
     app.openapi(getUserByIdRoute, getUserByIdHandler);
     app.openapi(createUserRoute, createUserHandler);
     app.openapi(loginRoute, loginHandler);
+    app.openapi(logoutRoute, logoutHandler);
+    app.openapi(registerRoute, registerHandler);
 };

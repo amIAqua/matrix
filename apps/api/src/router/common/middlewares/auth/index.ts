@@ -1,39 +1,82 @@
 import { verify } from 'hono/jwt';
+import { Effect, pipe } from 'effect';
 import { getCookie } from 'hono/cookie';
 import { MiddlewareHandler } from 'hono';
 import { appConfig } from 'src/app/config';
 import { createMiddleware } from 'hono/factory';
-import { JWTPayload } from 'hono/utils/jwt/types';
 import { HTTPException } from 'hono/http-exception';
 import { TUser } from 'src/router/common/types/user';
-import { HttpStatusCode } from 'src/router/common/response';
+import { HttpStatusCode, THttpError } from 'src/router/common/response';
+import {
+    InternalServerError,
+    UnauthorizedError,
+} from 'src/router/common/errors';
 
 export const authMiddleware = (): MiddlewareHandler => {
     const middleware = createMiddleware(async (ctx, next) => {
-        const authToken = getCookie(ctx, appConfig.SESSION_COOKIE_NAME);
+        const getAuthTokenFromCookie = Effect.try({
+            try: () => {
+                const tokenFromCookie = getCookie(
+                    ctx,
+                    appConfig.SESSION_COOKIE_NAME,
+                );
 
-        if (!authToken) {
-            throw new HTTPException(HttpStatusCode.UNAUTHORIZED, {
-                message: 'Unauthorized access',
+                if (!tokenFromCookie) {
+                    throw new UnauthorizedError(
+                        HttpStatusCode.UNAUTHORIZED,
+                        'Unauthorized access.',
+                    );
+                }
+
+                return tokenFromCookie;
+            },
+            catch: () => {
+                return new UnauthorizedError(
+                    HttpStatusCode.UNAUTHORIZED,
+                    'Unauthorized access',
+                );
+            },
+        });
+
+        const verifyAuthToken = (authToken: string) =>
+            Effect.tryPromise({
+                try: async () => {
+                    return await verify(
+                        authToken,
+                        appConfig.ENCRYPTION_SESSION_KEY,
+                    );
+                },
+                catch: () =>
+                    new InternalServerError(
+                        HttpStatusCode.INTERNAL_SERVER_ERROR,
+                        'Error while verifying auth token. Token is incorrect or session expired',
+                    ),
             });
-        }
 
-        let payload: JWTPayload;
+        const setSession = (payload: any) =>
+            Effect.try(() => {
+                ctx.set('session', {
+                    expiresInAt: payload.exp,
+                    loggedInAt: payload.loggedInAt,
+                    user: payload.user as TUser,
+                });
+            });
+
+        const effect = pipe(
+            getAuthTokenFromCookie,
+            Effect.flatMap((authToken) => verifyAuthToken(authToken)),
+            Effect.flatMap(setSession),
+        );
+
         try {
-            payload = await verify(authToken, appConfig.ENCRYPTION_SESSION_KEY);
-        } catch (error) {
-            console.log(error);
-            throw new HTTPException(HttpStatusCode.INTERNAL_SERVER_ERROR, {
-                message:
-                    'Error while verifying auth token. Token is incorrect or session expired...',
-            });
-        }
+            await Effect.runPromise(effect);
+        } catch (error: any) {
+            const errorBody: THttpError = JSON.parse(
+                (error.message as string) || '{}',
+            );
 
-        if (payload) {
-            ctx.set('session', {
-                expiresInAt: payload.exp,
-                loggedInAt: payload.loggedInAt,
-                user: payload.user as TUser,
+            throw new HTTPException(errorBody.statusCode, {
+                message: errorBody.message,
             });
         }
 
