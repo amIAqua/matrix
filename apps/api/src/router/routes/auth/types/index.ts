@@ -1,4 +1,4 @@
 export type LoginUserDto = {
     email: string;
-    password: string;
+    hashedPassword: string;
 };

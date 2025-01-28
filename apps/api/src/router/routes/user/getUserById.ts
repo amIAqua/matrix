@@ -4,15 +4,18 @@ import { db, usersTable } from 'src/db';
 import { HTTPException } from 'hono/http-exception';
 import { createRoute, z as zod } from '@hono/zod-openapi';
 import { HttpStatusCode, THandlerResponse } from 'src/router/common/response';
+import { TUser } from 'src/router/common/types/user';
 import {
     userSchema,
-    TUser,
     getUserByIdParams,
-} from 'src/router/routes/user/types';
+} from 'src/router/routes/user/validation';
+import { mapDbUserEntityToTUser } from 'src/router/common/mappers/user';
+import { authMiddleware } from 'src/router/common/middlewares/auth';
 
 export const getUserByIdRoute = createRoute({
     method: 'get',
     path: '/user/{id}',
+    middleware: authMiddleware(),
     tags: ['user'],
     request: {
         params: getUserByIdParams,
@@ -34,17 +37,16 @@ export const getUserByIdHandler = async (
 ): Promise<THandlerResponse<TUser, HttpStatusCode.OK>> => {
     const userId: string = ctx.req.param('id');
 
+    console.log(ctx.get('session'));
+
     let user: TUser;
     try {
-        const users = await db
+        const [userDbResponse] = await db
             .select()
             .from(usersTable)
             .where(sql`${usersTable.id} = ${userId}`);
 
-        user = {
-            ...users[0],
-            createdAt: users[0].createdAt.toISOString(),
-        };
+        user = mapDbUserEntityToTUser(userDbResponse);
     } catch (error) {
         throw new HTTPException(HttpStatusCode.NOT_FOUND, {
             message: 'User not found.',

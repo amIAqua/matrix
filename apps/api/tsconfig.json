@@ -9,6 +9,7 @@
     "types": [
       "node"
     ],
+    "strictNullChecks": true,
     "baseUrl": "./",
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx",
