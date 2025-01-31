@@ -18,4 +18,5 @@ export enum HttpStatusCode {
     CLIENT_ERROR = 400,
     NOT_FOUND = 404,
     UNAUTHORIZED = 403,
+    UNPROCESSABLE_ENTITY = 422,
 }

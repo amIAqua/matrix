@@ -1,23 +1,30 @@
 import { Context } from 'hono';
 import { sign } from 'hono/jwt';
+import { compare } from 'bcrypt';
 import { sql } from 'drizzle-orm';
 import { Effect, pipe } from 'effect';
-// import { pbkdf2Sync, randomBytes } from 'node:crypto';
 import { setCookie } from 'hono/cookie';
 import { db, usersTable } from 'src/db';
 import { appConfig } from 'src/app/config';
+import { createRoute } from '@hono/zod-openapi';
 import { HTTPException } from 'hono/http-exception';
-import { createRoute, z as zod } from '@hono/zod-openapi';
-import { LoginUserDto } from 'src/router/routes/auth/types';
-import { loginUserSchema } from 'src/router/routes/auth/validation';
+import { TDbUser, TUser } from 'src/router/common/types/user';
+import { LoginUserDto } from 'src/router/routes/auth/types/dto/request';
+import {
+    loginUserRequestSchema,
+    userLoggedInResponseSchema,
+} from 'src/router/routes/auth/validation/login';
 import { mapDbUserEntityToTUser } from 'src/router/common/mappers/user';
-import { InternalServerError, NotFoundError } from 'src/router/common/errors';
+import {
+    ClientError,
+    InternalServerError,
+    NotFoundError,
+} from 'src/router/common/errors';
 import {
     HttpStatusCode,
     THandlerResponse,
     THttpError,
 } from 'src/router/common/response';
-import { TDbUser, TUser } from 'src/router/common/types/user';
 
 export const loginRoute = createRoute({
     method: 'post',
@@ -27,7 +34,7 @@ export const loginRoute = createRoute({
         body: {
             content: {
                 'application/json': {
-                    schema: loginUserSchema,
+                    schema: loginUserRequestSchema,
                 },
             },
             required: true,
@@ -38,9 +45,7 @@ export const loginRoute = createRoute({
             description: 'Login user and create session',
             content: {
                 'application/json': {
-                    schema: zod.object({
-                        loggedIn: zod.boolean(),
-                    }),
+                    schema: userLoggedInResponseSchema,
                 },
             },
         },
@@ -62,7 +67,7 @@ export const loginHandler = async (
             if (!userDbResponse) {
                 throw new NotFoundError(
                     HttpStatusCode.NOT_FOUND,
-                    `User with email ${loginDto.email} was not found.`,
+                    `User with email ${loginDto.email} was not found`,
                 );
             }
 
@@ -78,6 +83,30 @@ export const loginHandler = async (
         },
     });
 
+    const comparePasswords = (dbUser: TDbUser) =>
+        Effect.tryPromise({
+            try: async () => {
+                const arePasswordsMatch = await compare(
+                    loginDto.passwordHash,
+                    dbUser.hashedPassword,
+                );
+
+                if (!arePasswordsMatch) {
+                    throw new ClientError(
+                        HttpStatusCode.CLIENT_ERROR,
+                        'Wrong password. Passwords do not match',
+                    );
+                }
+
+                return dbUser;
+            },
+            catch: () =>
+                new InternalServerError(
+                    HttpStatusCode.INTERNAL_SERVER_ERROR,
+                    'Password validation failed',
+                ),
+        });
+
     const createSession = (user: TUser) =>
         Effect.tryPromise({
             try: async () => {
@@ -91,9 +120,10 @@ export const loginHandler = async (
                 );
             },
             catch: () =>
-                new HTTPException(HttpStatusCode.INTERNAL_SERVER_ERROR, {
-                    message: `Authentication token parse fails...`,
-                }),
+                new InternalServerError(
+                    HttpStatusCode.INTERNAL_SERVER_ERROR,
+                    'Authentication token validation failed',
+                ),
         });
 
     const setSessionToken = (sessionToken: string) => {
@@ -106,8 +136,9 @@ export const loginHandler = async (
         return true;
     };
 
-    const effect = pipe(
+    const program = pipe(
         getUserFromDb,
+        Effect.andThen(comparePasswords),
         Effect.map(mapDbUserEntityToTUser),
         Effect.andThen(createSession),
         Effect.map(setSessionToken),
@@ -115,7 +146,7 @@ export const loginHandler = async (
 
     let loggedIn = false;
     try {
-        loggedIn = await Effect.runPromise(effect);
+        loggedIn = await Effect.runPromise(program);
     } catch (error: any) {
         const errorBody: THttpError = JSON.parse(
             (error.message as string) || '{}',
@@ -125,22 +156,6 @@ export const loginHandler = async (
             message: errorBody.message,
         });
     }
-
-    // const userFromDbPassword = userDbResponse.hashedPassword;
-    // const loginDtoPassword = loginDto.hashedPassword;
-
-    // // this is in register method
-    // const salt = randomBytes(32).toString('hex');
-    // const genHash = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex')
-
-    // // this is in login method
-    // const checkHash = pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex')
-
-    // if (userFromDbPassword !== loginDtoPassword) {
-    //     throw new HTTPException(HttpStatusCode.CLIENT_ERROR, {
-    //         message: `Wrong password! Mismatch...`,
-    //     });
-    // }
 
     return ctx.json({ loggedIn }, HttpStatusCode.OK);
 };

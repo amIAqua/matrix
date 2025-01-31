@@ -6,8 +6,12 @@ import { setupSwagger } from 'src/swagger/setup';
 
 import { cors } from 'hono/cors';
 import { appConfig } from 'src/app/config';
+import { defaultHook } from 'src/router/common/errors';
 
-const app = new OpenAPIHono();
+const app = new OpenAPIHono({
+    defaultHook,
+});
+
 app.use(
     cors({
         origin: 'localhost',

@@ -1,11 +1,19 @@
 import { Context } from 'hono';
-import { Effect } from 'effect';
+import { sql } from 'drizzle-orm';
+import { hash, genSalt } from 'bcrypt';
+import { Effect, pipe } from 'effect';
 import { db, usersTable } from 'src/db';
 import { HTTPException } from 'hono/http-exception';
-import { createRoute, z as zod } from '@hono/zod-openapi';
-import { RegisterUserDto } from 'src/router/routes/auth/types';
-import { registerUserSchema } from 'src/router/routes/auth/validation';
-import { InternalServerError } from 'src/router/common/errors';
+import { createRoute } from '@hono/zod-openapi';
+import { RegisterUserDto } from 'src/router/routes/auth/types/dto/request';
+import {
+    registerUserSchema,
+    userRegisteredResponseSchema,
+} from 'src/router/routes/auth/validation/register';
+import {
+    EntityExistsError,
+    InternalServerError,
+} from 'src/router/common/errors';
 import {
     HttpStatusCode,
     THandlerResponse,
@@ -24,18 +32,14 @@ export const registerRoute = createRoute({
                     schema: registerUserSchema,
                 },
             },
-            required: true,
         },
     },
     responses: {
-        200: {
+        201: {
             description: 'Create new user account',
             content: {
                 'application/json': {
-                    schema: zod.object({
-                        created: zod.boolean(),
-                        userId: zod.string(),
-                    }),
+                    schema: userRegisteredResponseSchema,
                 },
             },
         },
@@ -49,38 +53,84 @@ type THandlerReturnType = {
 
 export const registerHandler = async (
     ctx: Context,
-): Promise<THandlerResponse<THandlerReturnType, HttpStatusCode.OK>> => {
+): Promise<THandlerResponse<THandlerReturnType, HttpStatusCode.CREATED>> => {
     const registerDto: RegisterUserDto = await ctx.req.json();
 
-    const createdUserDbResponse = Effect.tryPromise({
+    const checkUserWithSameEmailExists = Effect.tryPromise({
         try: async () => {
             const [userDbResponse] = await db
-                .insert(usersTable)
-                .values({
-                    name: registerDto.name,
-                    surname: registerDto.surname,
-                    email: registerDto.email,
-                    avatarUrl: registerDto.avatarUrl
-                        ? registerDto.avatarUrl
-                        : null,
-                    hashedPassword: registerDto.hashedPassword,
-                })
-                .returning();
+                .select()
+                .from(usersTable)
+                .where(sql`${usersTable.email} = ${registerDto.email}`);
 
-            return userDbResponse as TDbUser;
+            if (userDbResponse) {
+                throw new EntityExistsError(
+                    HttpStatusCode.CLIENT_ERROR,
+                    `User with email "${registerDto.email}" already exists`,
+                );
+            }
         },
-        catch: () => {
+        catch: (error) => {
+            if (error instanceof EntityExistsError) return error;
+
             return new InternalServerError(
                 HttpStatusCode.INTERNAL_SERVER_ERROR,
-                'Internal server error...Please, try again later',
+                'Internal server error. Please, try again later',
             );
         },
     });
 
+    const hashPassword = Effect.tryPromise({
+        try: async () => {
+            // will be moved to FE
+            const salt = await genSalt(10);
+            return await hash(registerDto.passwordHash, salt);
+        },
+        catch: () =>
+            new InternalServerError(
+                HttpStatusCode.INTERNAL_SERVER_ERROR,
+                'Internal server error. Please, try again later',
+            ),
+    });
+
+    const createdUserDbResponse = (hashedPassword: string) =>
+        Effect.tryPromise({
+            try: async () => {
+                const [userDbResponse] = await db
+                    .insert(usersTable)
+                    .values({
+                        name: registerDto.name,
+                        surname: registerDto.surname,
+                        email: registerDto.email,
+                        avatarUrl: registerDto.avatarUrl
+                            ? registerDto.avatarUrl
+                            : null,
+                        hashedPassword,
+                    })
+                    .returning();
+
+                return userDbResponse as TDbUser;
+            },
+            catch: () => {
+                return new InternalServerError(
+                    HttpStatusCode.INTERNAL_SERVER_ERROR,
+                    'Internal server error. Please, try again later',
+                );
+            },
+        });
+
+    const program = pipe(
+        checkUserWithSameEmailExists,
+        Effect.andThen(hashPassword),
+        Effect.andThen((hashedPassword) =>
+            createdUserDbResponse(hashedPassword),
+        ),
+    );
+
     let created = false;
     let userId;
     try {
-        const { id } = await Effect.runPromise(createdUserDbResponse);
+        const { id } = await Effect.runPromise(program);
 
         userId = id!;
         created = true;
@@ -94,5 +144,5 @@ export const registerHandler = async (
         });
     }
 
-    return ctx.json({ created, userId }, HttpStatusCode.OK);
+    return ctx.json({ created, userId }, HttpStatusCode.CREATED);
 };
