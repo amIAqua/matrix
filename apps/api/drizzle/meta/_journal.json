@@ -36,6 +36,27 @@
       "when": 1737892159599,
       "tag": "0004_outstanding_gorilla_man",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1738418006257,
+      "tag": "0005_wild_the_initiative",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1738432438488,
+      "tag": "0006_orange_reptil",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1738434393856,
+      "tag": "0007_sparkling_blizzard",
+      "breakpoints": true
     }
   ]
 }

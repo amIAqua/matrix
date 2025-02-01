@@ -5,7 +5,7 @@ export type TDbUser = {
     surname: string;
     hashedPassword: string;
     avatarUrl: string | null;
-    createdAt: Date;
+    createdAt: string;
 };
 
 export type TUser = {
@@ -14,5 +14,5 @@ export type TUser = {
     surname: string;
     email: string;
     createdAt: string;
-    avatarUrl: string | null;
+    avatarUrl?: string;
 };

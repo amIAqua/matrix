@@ -6,7 +6,7 @@ export const mapDbUserEntityToTUser = (dbUser: TDbUser): TUser => {
         name: dbUser.name,
         surname: dbUser.surname,
         email: dbUser.email,
-        createdAt: dbUser.createdAt.toISOString(),
-        avatarUrl: dbUser.avatarUrl ? dbUser.avatarUrl : null,
+        createdAt: dbUser.createdAt,
+        avatarUrl: dbUser.avatarUrl ? dbUser.avatarUrl : undefined,
     };
 };

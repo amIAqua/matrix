@@ -75,7 +75,7 @@ export const registerHandler = async (
 
             return new InternalServerError(
                 HttpStatusCode.INTERNAL_SERVER_ERROR,
-                'Internal server error. Please, try again later',
+                `Error: registerHandler.checkUserWithSameEmailExists - ${error}`,
             );
         },
     });
@@ -86,10 +86,10 @@ export const registerHandler = async (
             const salt = await genSalt(10);
             return await hash(registerDto.passwordHash, salt);
         },
-        catch: () =>
+        catch: (error) =>
             new InternalServerError(
                 HttpStatusCode.INTERNAL_SERVER_ERROR,
-                'Internal server error. Please, try again later',
+                `Error: registerHandler.hashPassword - ${error}`,
             ),
     });
 
@@ -111,10 +111,10 @@ export const registerHandler = async (
 
                 return userDbResponse as TDbUser;
             },
-            catch: () => {
+            catch: (error) => {
                 return new InternalServerError(
                     HttpStatusCode.INTERNAL_SERVER_ERROR,
-                    'Internal server error. Please, try again later',
+                    `Error: registerHandler.createdUserDbResponse - ${error}`,
                 );
             },
         });

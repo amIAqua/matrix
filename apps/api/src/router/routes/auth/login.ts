@@ -78,7 +78,7 @@ export const loginHandler = async (
 
             return new InternalServerError(
                 HttpStatusCode.INTERNAL_SERVER_ERROR,
-                'Internal server error...Please, try again later',
+                `Error: loginHandler.getUserFromDb - ${error}`,
             );
         },
     });
@@ -100,10 +100,10 @@ export const loginHandler = async (
 
                 return dbUser;
             },
-            catch: () =>
+            catch: (error) =>
                 new InternalServerError(
                     HttpStatusCode.INTERNAL_SERVER_ERROR,
-                    'Password validation failed',
+                    `Password validation failed - ${error}`,
                 ),
         });
 

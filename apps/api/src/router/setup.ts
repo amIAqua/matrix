@@ -14,11 +14,13 @@ import {
     registerRoute,
     registerHandler,
 } from 'src/router/routes/auth';
+import { createEventRoute, createEventHandler } from 'src/router/routes/event';
 
-export const setupRoutes = (app: OpenAPIHono): any => {
+export const setupRoutes = (app: OpenAPIHono): void => {
     app.openapi(getUserByIdRoute, getUserByIdHandler);
     app.openapi(createUserRoute, createUserHandler);
     app.openapi(loginRoute, loginHandler);
     app.openapi(logoutRoute, logoutHandler);
     app.openapi(registerRoute, registerHandler);
+    app.openapi(createEventRoute, createEventHandler);
 };
