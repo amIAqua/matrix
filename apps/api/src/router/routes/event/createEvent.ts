@@ -11,11 +11,11 @@ import {
     createEventSchema,
     eventSchema,
 } from 'src/router/routes/event/validation';
-import { TEvent } from 'src/modules/event/api/types';
+import { TEvent } from 'src/modules/common/types/event/TEvent';
 import { InternalServerError } from 'src/router/common/errors';
 import { authMiddleware } from 'src/router/common/middlewares/auth';
-import { CreateEventDto } from 'src/modules/event/api/dto/request';
-import { ICreateEventService } from 'src/modules/event/api/interfaces';
+import { CreateEventDto } from 'src/modules/event/api/dto/request/createEventDto';
+import { ICreateEventService } from 'src/modules/event/api/interfaces/ICreateEventService';
 
 export const createEventRoute = createRoute({
     method: 'post',

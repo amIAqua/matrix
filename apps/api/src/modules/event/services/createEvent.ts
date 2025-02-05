@@ -1,16 +1,15 @@
 import { sql } from 'drizzle-orm';
 import { Effect, pipe } from 'effect';
 import { db, eventsTable, usersTable } from 'src/db';
-// move to modules
-import { TDbUser } from 'src/router/common/types/user';
 import { HttpStatusCode } from 'src/router/common/response';
 import { InternalServerError } from 'src/router/common/errors';
-import { TDbEvent, TEvent } from 'src/modules/event/api/types';
-import { CreateEventDto } from 'src/modules/event/api/dto/request';
-import { ICreateEventService } from 'src/modules/event/api/interfaces';
-// move to modules
-import { mapDbUserEntityToTUser } from 'src/router/common/mappers/user';
-import { mapDbEventEntityTEvent } from 'src/modules/event/api/mappers';
+import { TEvent } from 'src/modules/common/types/event/TEvent';
+import { TDbUser } from 'src/modules/common/types/user/TDbUser';
+import { TDbEvent } from 'src/modules/common/types/event/TDbEvent';
+import { CreateEventDto } from 'src/modules/event/api/dto/request/createEventDto';
+import { ICreateEventService } from 'src/modules/event/api/interfaces/ICreateEventService';
+import { mapDbUserEntityToTUser } from 'src/modules/common/mappers/user/mapDbUserEntityToTUser';
+import { mapDbEventEntityTEvent } from 'src/modules/common/mappers/event/mapDbEventEntityTEvent';
 
 export class CreateEventService implements ICreateEventService {
     private createEvent(

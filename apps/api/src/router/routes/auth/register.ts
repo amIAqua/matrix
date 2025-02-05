@@ -3,8 +3,9 @@ import { sql } from 'drizzle-orm';
 import { hash, genSalt } from 'bcrypt';
 import { Effect, pipe } from 'effect';
 import { db, usersTable } from 'src/db';
-import { HTTPException } from 'hono/http-exception';
 import { createRoute } from '@hono/zod-openapi';
+import { HTTPException } from 'hono/http-exception';
+import { TDbUser } from 'src/modules/common/types/user/TDbUser';
 import { RegisterUserDto } from 'src/router/routes/auth/types/dto/request';
 import {
     registerUserSchema,
@@ -19,7 +20,6 @@ import {
     THandlerResponse,
     THttpError,
 } from 'src/router/common/response';
-import { TDbUser } from 'src/router/common/types/user';
 
 export const registerRoute = createRoute({
     method: 'post',

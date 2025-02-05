@@ -8,13 +8,14 @@ import { db, usersTable } from 'src/db';
 import { appConfig } from 'src/app/config';
 import { createRoute } from '@hono/zod-openapi';
 import { HTTPException } from 'hono/http-exception';
-import { TDbUser, TUser } from 'src/router/common/types/user';
+import { TUser } from 'src/modules/common/types/user/TUser';
+import { TDbUser } from 'src/modules/common/types/user/TDbUser';
 import { LoginUserDto } from 'src/router/routes/auth/types/dto/request';
 import {
     loginUserRequestSchema,
     userLoggedInResponseSchema,
 } from 'src/router/routes/auth/validation/login';
-import { mapDbUserEntityToTUser } from 'src/router/common/mappers/user';
+import { mapDbUserEntityToTUser } from 'src/modules/common/mappers/user/mapDbUserEntityToTUser';
 import {
     ClientError,
     InternalServerError,

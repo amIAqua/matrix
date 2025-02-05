@@ -1,11 +1,6 @@
 import type { OpenAPIHono } from '@hono/zod-openapi';
 
-import {
-    createUserRoute,
-    createUserHandler,
-    getUserByIdRoute,
-    getUserByIdHandler,
-} from 'src/router/routes/user';
+import { getUserByIdRoute, getUserByIdHandler } from 'src/router/routes/user';
 import {
     loginRoute,
     loginHandler,
@@ -16,12 +11,18 @@ import {
 } from 'src/router/routes/auth';
 import { createEventRoute, createEventHandler } from 'src/router/routes/event';
 import { CreateEventService } from 'src/modules/event/services';
+import { UserGetByIdService } from 'src/modules/user/services';
 
 export const setupRoutes = (app: OpenAPIHono): void => {
     const createEventService = new CreateEventService();
+    const userGetByIdService = new UserGetByIdService();
 
-    app.openapi(getUserByIdRoute, getUserByIdHandler);
-    app.openapi(createUserRoute, createUserHandler);
+    app.openapi(getUserByIdRoute, (ctx) =>
+        getUserByIdHandler(ctx, {
+            userGetByIdService,
+        }),
+    );
+
     app.openapi(loginRoute, loginHandler);
     app.openapi(logoutRoute, logoutHandler);
     app.openapi(registerRoute, registerHandler);
