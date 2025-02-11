@@ -7,5 +7,7 @@ export type TEvent = {
     guests: {
         id: string;
         name: string;
+        surname: string;
+        avatarUrl?: string;
     }[];
 };

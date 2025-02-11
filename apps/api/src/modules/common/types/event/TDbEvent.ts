@@ -1,8 +1,7 @@
 export type TDbEvent = {
-    id: string | null;
+    id: string;
     title?: string;
     description?: string;
     dateTime: string;
     creatorId: string;
-    guestIds: string[];
 };

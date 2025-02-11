@@ -25,6 +25,7 @@ export const createEventSchema = zod.object({
 });
 
 export const eventSchema = zod.object({
+    id: zod.string().uuid(),
     ...baseEventSchema.shape,
     guests: zod.array(
         zod.object({
@@ -38,4 +39,23 @@ export const eventSchema = zod.object({
             }),
         }),
     ),
+});
+
+export const eventsFilterSchema = zod.object({
+    dateFrom: zod.coerce.date().optional().openapi({
+        title: 'dateFrom',
+        type: 'string',
+    }),
+    dateTo: zod.coerce.date().optional().openapi({
+        title: 'dateTo',
+        type: 'string',
+    }),
+    fulltext: zod.string().optional().openapi({
+        title: 'fulltext',
+        type: 'string',
+    }),
+});
+
+export const getEventsResponseSchema = zod.object({
+    data: zod.array(eventSchema),
 });
