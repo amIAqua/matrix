@@ -1,60 +1,50 @@
 <script setup lang="ts">
-import { routes } from 'src/shared/layout/base/partials/sidebar/routes';
-import Logo from 'src/shared/layout/base/partials/appbar/partials/logo/Logo.vue';
+import { useRoute } from 'vue-router';
+import { BrowsersOutline, HomeOutline, CalendarClearOutline } from '@vicons/ionicons5';
 
-import {
-    Sidebar,
-    SidebarContent,
-    SidebarGroup,
-    SidebarHeader,
-    SidebarFooter,
-    SidebarGroupContent,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
-    useSidebar
-} from 'src/shared/uikit/components/sidebar';
+const route = useRoute();
 
-const { state } = useSidebar();
-
+const menuItems = [
+    {
+        id: 'home',
+        title: 'Home',
+        to: '/',
+        icon: HomeOutline,
+    },
+    {
+        id: 'events',
+        title: 'Events',
+        to: '/events',
+        icon: CalendarClearOutline,
+    }
+];
 </script>
 
 <template>
-    <Sidebar class="p-3" collapsible="icon">
-        <SidebarHeader class="pb-2">
-            <div class="flex items-center justify-between">
-                <RouterLink to="/">
-                    <Logo :isCollapsed="state === 'collapsed'" />
+    <div class="w-full h-full bg-stone-100">
+        <div class="p-[14px] ">
+            <RouterLink to="/">
+                <div class="flex items-center gap-1 mb-[30px]">
+                    <div>
+                        <BrowsersOutline class="w-[24px] text-black" />
+                    </div>
+                    <h1 class="text-black font-semibold text-lg">Matrix</h1>
+                </div>
+            </RouterLink>
 
+            <div class="flex flex-col">
+                <RouterLink v-for="item of menuItems" :to="item.to" :key="item.id">
+                    <div :class="{
+                        'border-stone-200 border-solid border-[1px] bg-white rounded-lg': item.to === route.path,
+                        'border-transparent border-solid border-[1px]': item.to !== route.path,
+                    }"
+                        class="flex items-center gap-2 py-[10px] px-[12px]  hover:bg-white hover:rounded-lg hover:border-stone-200 hover:border-solid hover:border-[1px]">
+                        <component :is="item.icon" class="w-[22px]" />
+
+                        <p class="font-semibold text-[16px]">{{ item.title }}</p>
+                    </div>
                 </RouterLink>
             </div>
-        </SidebarHeader>
-
-        <SidebarContent>
-            <div class="divider" />
-
-            <SidebarGroup>
-                <SidebarGroupContent>
-                    <SidebarMenu>
-                        <SidebarMenuItem v-for="route in routes" :key="route.title">
-                            <SidebarMenuButton asChild variant="default">
-                                <RouterLink :to="route.url">
-                                    <component :is="route.icon" />
-                                    <span>{{ route.title }}</span>
-                                </RouterLink>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                    </SidebarMenu>
-                </SidebarGroupContent>
-            </SidebarGroup>
-        </SidebarContent>
-        <SidebarFooter />
-    </Sidebar>
+        </div>
+    </div>
 </template>
-
-<style lang="css" scoped>
-.divider {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-}
-</style>
