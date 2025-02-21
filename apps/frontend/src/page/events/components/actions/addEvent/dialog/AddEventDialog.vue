@@ -17,8 +17,12 @@ defineEmits<Emits>();
 <template>
     <n-modal :show="isVisible" title="New event">
         <div
-            class="min-w-[300px] bg-white p-[20px] rounded-[20px] relative flex flex-col border-solid border-[2px] border-stone-200">
-            <div @click="$emit('toggleDialog')" class="absolute top-[20px] right-[20px]">
+            class="min-w-[300px] bg-white p-[20px] rounded-[20px] relative flex flex-col border-solid border-[2px] border-stone-200"
+        >
+            <div
+                @click="$emit('toggleDialog')"
+                class="absolute top-[20px] right-[20px]"
+            >
                 <CloseOutline class="w-[30px] h-[30px] cursor-pointer" />
             </div>
 
@@ -31,7 +35,12 @@ defineEmits<Emits>();
             </div>
 
             <div class="flex w-full justify-end">
-                <n-button color="#222" text-color="#fff" class="rounded-lg" @click="$emit('toggleDialog')">
+                <n-button
+                    color="#222"
+                    text-color="#fff"
+                    class="rounded-lg"
+                    @click="$emit('toggleDialog')"
+                >
                     Create event
                 </n-button>
             </div>

@@ -10,8 +10,12 @@ defineEmits<Emits>();
 </script>
 
 <template>
-    <n-button color="#222" text-color="#fff" class="flex items-center rounded-lg justify-center"
-        @click="$emit('toggleDialog')">
+    <n-button
+        color="#222"
+        text-color="#fff"
+        class="flex items-center rounded-lg justify-center"
+        @click="$emit('toggleDialog')"
+    >
         <Add class="w-[18px]" />
 
         <div class="ml-[4px]">

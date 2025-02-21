@@ -10,7 +10,16 @@ const form = ref({
 
 <template>
     <n-space vertical>
-        <n-input v-model:value="form.title" type="text" placeholder="Event title" size="large" />
-        <n-input v-model:value="form.description" type="textarea" placeholder="Event description" />
+        <n-input
+            v-model:value="form.title"
+            type="text"
+            placeholder="Event title"
+            size="large"
+        />
+        <n-input
+            v-model:value="form.description"
+            type="textarea"
+            placeholder="Event description"
+        />
     </n-space>
 </template>

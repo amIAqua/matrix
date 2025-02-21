@@ -13,5 +13,8 @@ const toggleDialog = (): void => {
 <template>
     <AddEventButton @toggle-dialog="toggleDialog" />
 
-    <AddEventDialog :is-visible="isAddEventModalVisible" @toggle-dialog="toggleDialog" />
+    <AddEventDialog
+        :is-visible="isAddEventModalVisible"
+        @toggle-dialog="toggleDialog"
+    />
 </template>

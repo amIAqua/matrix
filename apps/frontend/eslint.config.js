@@ -1,6 +1,7 @@
 import js from '@eslint/js';
 import typescript from '@typescript-eslint/eslint-plugin';
 import typescriptParser from '@typescript-eslint/parser';
+import vueParser from 'vue-eslint-parser';
 import vue from 'eslint-plugin-vue';
 import globals from 'globals';
 
@@ -10,10 +11,11 @@ export default [
     },
     js.configs.recommended,
     {
-        files: ['**/*.js', '**/*.ts'],
+        files: ['**/*.js', '**/*.ts', '**/*.vue'],
         languageOptions: {
-            parser: typescriptParser,
+            parser: vueParser,
             parserOptions: {
+                parser: typescriptParser,
                 ecmaVersion: 'latest',
                 sourceType: 'module',
                 ecmaFeatures: {
@@ -36,16 +38,14 @@ export default [
             '@typescript-eslint/no-unused-vars': 'error',
 
             // Vue specific rules
-            'vue/html-closing-bracket-newline': [
-                'error',
-                {
-                    singleline: 'never',
-                    multiline: 'always',
-                },
-            ],
+            // 'vue/html-closing-bracket-newline': [
+            //     'error',
+            //     {
+            //         singleline: 'never',
+            //         multiline: 'always',
+            //     },
+            // ],
             // 'vue/html-indent': ['error', 2],
-            'vue/component-name-in-template-casing': ['error', 'PascalCase'],
-            'vue/component-definition-name-casing': ['error', 'PascalCase'],
             'vue/match-component-file-name': [
                 'error',
                 {
