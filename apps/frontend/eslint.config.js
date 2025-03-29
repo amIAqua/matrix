@@ -46,20 +46,20 @@ export default [
             //     },
             // ],
             // 'vue/html-indent': ['error', 2],
-            'vue/match-component-file-name': [
-                'error',
-                {
-                    extensions: ['vue'],
-                    shouldMatchCase: true,
-                },
-            ],
-            'vue/max-attributes-per-line': [
-                'error',
-                {
-                    singleline: 3,
-                    multiline: 1,
-                },
-            ],
+            // 'vue/match-component-file-name': [
+            //     'error',
+            //     {
+            //         extensions: ['vue'],
+            //         shouldMatchCase: true,
+            //     },
+            // ],
+            // 'vue/max-attributes-per-line': [
+            //     'error',
+            //     {
+            //         singleline: 3,
+            //         multiline: 1,
+            //     },
+            // ],
             // 'vue/multi-word-component-names': 'error',
             'vue/no-unused-components': 'warn',
             // 'vue/script-setup-uses-vars': 'error',

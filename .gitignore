@@ -17,6 +17,7 @@ coverage
 
 # Ide
 .vscode/*
+.zed/*
 
 # Turbo
 .turbo
