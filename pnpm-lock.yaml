@@ -94,6 +94,46 @@ importers:
         specifier: ^8.15.0
         version: 8.15.0(eslint@9.15.0(jiti@2.4.2))(typescript@5.6.3)
 
+  apps/backend:
+    dependencies:
+      '@hono/node-server':
+        specifier: ^1.14.0
+        version: 1.14.0(hono@4.7.5)
+      '@hono/swagger-ui':
+        specifier: ^0.5.0
+        version: 0.5.0(hono@4.7.5)
+      '@hono/zod-openapi':
+        specifier: ^0.18.3
+        version: 0.18.3(hono@4.7.5)(zod@3.24.1)
+      dotenv:
+        specifier: ^16.4.7
+        version: 16.4.7
+      drizzle-orm:
+        specifier: ^0.38.4
+        version: 0.38.4(@types/pg@8.11.11)(@types/react@18.3.1)(pg@8.13.1)(react@19.0.0)
+      hono:
+        specifier: ^4.7.5
+        version: 4.7.5
+      pg:
+        specifier: ^8.13.1
+        version: 8.13.1
+      zod:
+        specifier: ^3.24.1
+        version: 3.24.1
+    devDependencies:
+      '@types/node':
+        specifier: ^20.11.17
+        version: 20.17.6
+      eslint:
+        specifier: ^9.15.0
+        version: 9.15.0(jiti@2.4.2)
+      tsx:
+        specifier: ^4.7.1
+        version: 4.19.2
+      typescript-eslint:
+        specifier: ^8.15.0
+        version: 8.15.0(eslint@9.15.0(jiti@2.4.2))(typescript@5.6.3)
+
   apps/frontend:
     dependencies:
       '@pinia/colada':
@@ -934,6 +974,12 @@ packages:
 
   '@hono/node-server@1.13.7':
     resolution: {integrity: sha512-kTfUMsoloVKtRA2fLiGSd9qBddmru9KadNyhJCwgKBxTiNkaAJEwkVN9KV/rS4HtmmNRtUh6P+YpmjRMl0d9vQ==}
+    engines: {node: '>=18.14.1'}
+    peerDependencies:
+      hono: ^4
+
+  '@hono/node-server@1.14.0':
+    resolution: {integrity: sha512-YUCxJwgHRKSqjrdTk9e4VMGKN27MK5r4+MGPyZTgKH+IYbK+KtYbHeOcPGJ91KGGD6RIQiz2dAHxvjauNhOS8g==}
     engines: {node: '>=18.14.1'}
     peerDependencies:
       hono: ^4
@@ -2438,6 +2484,10 @@ packages:
 
   hono@4.6.17:
     resolution: {integrity: sha512-Kbh4M0so2RzLiIg6iP33DoTU68TdvP2O/kb1Hhhdwa37fazuf402ig8ZRfjkz2dqXwiWl2dAgh0f++TuKAdOtQ==}
+    engines: {node: '>=16.9.0'}
+
+  hono@4.7.5:
+    resolution: {integrity: sha512-fDOK5W2C1vZACsgLONigdZTRZxuBqFtcKh7bUQ5cVSbwI2RWjloJDcgFOVzbQrlI6pCmhlTsVYZ7zpLj4m4qMQ==}
     engines: {node: '>=16.9.0'}
 
   hookable@5.5.3:
@@ -4381,9 +4431,17 @@ snapshots:
     dependencies:
       hono: 4.6.17
 
+  '@hono/node-server@1.14.0(hono@4.7.5)':
+    dependencies:
+      hono: 4.7.5
+
   '@hono/swagger-ui@0.5.0(hono@4.6.17)':
     dependencies:
       hono: 4.6.17
+
+  '@hono/swagger-ui@0.5.0(hono@4.7.5)':
+    dependencies:
+      hono: 4.7.5
 
   '@hono/zod-openapi@0.18.3(hono@4.6.17)(zod@3.24.1)':
     dependencies:
@@ -4392,9 +4450,21 @@ snapshots:
       hono: 4.6.17
       zod: 3.24.1
 
+  '@hono/zod-openapi@0.18.3(hono@4.7.5)(zod@3.24.1)':
+    dependencies:
+      '@asteasolutions/zod-to-openapi': 7.3.0(zod@3.24.1)
+      '@hono/zod-validator': 0.4.2(hono@4.7.5)(zod@3.24.1)
+      hono: 4.7.5
+      zod: 3.24.1
+
   '@hono/zod-validator@0.4.2(hono@4.6.17)(zod@3.24.1)':
     dependencies:
       hono: 4.6.17
+      zod: 3.24.1
+
+  '@hono/zod-validator@0.4.2(hono@4.7.5)(zod@3.24.1)':
+    dependencies:
+      hono: 4.7.5
       zod: 3.24.1
 
   '@humanfs/core@0.19.1': {}
@@ -6199,6 +6269,8 @@ snapshots:
       zod-openapi: 4.2.2(zod@3.24.1)
 
   hono@4.6.17: {}
+
+  hono@4.7.5: {}
 
   hookable@5.5.3: {}
 
